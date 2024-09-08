@@ -13,6 +13,8 @@ pg.display.set_mode((320, 240))
 
 
 async def main():
+    count = 60
+
     pg.event.pump()
 
     game = GameOfLife()
@@ -23,14 +25,12 @@ async def main():
     game.addPattern("Spaceship H", vec(4, 10))
     game.addPattern("Beacon", vec(20, 25))
 
-    game.run()
-
-    count = 60
-
     while True:
         print(f"{count}: Hello from Pygame")
         pg.display.update()
         await asyncio.sleep(0)  # You must include this statement in your main loop. Keep the argument at 0.
+
+        game.run()
 
         if not count:
             pg.quit()
