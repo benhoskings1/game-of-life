@@ -1,7 +1,7 @@
 import asyncio
 import pygame as pg
 from game import GameOfLife
-
+from screen import Screen, Colours
 
 
 vec = pg.Vector2
@@ -9,11 +9,12 @@ pg.init()
 
 clock = pg.time.Clock()
 
-pg.display.set_mode((320, 240))
-
 
 async def main():
-    count = 60
+    count = 600
+    colour = Colours.white
+
+    screen = pg.display.set_mode((320, 240))
 
     pg.event.pump()
 
@@ -27,10 +28,17 @@ async def main():
 
     while True:
         print(f"{count}: Hello from Pygame")
-        pg.display.update()
+
         await asyncio.sleep(0)  # You must include this statement in your main loop. Keep the argument at 0.
 
-        game.run()
+        if count % 10 == 0:
+            if colour == Colours.white:
+                colour = Colours.black
+            else:
+                colour = Colours.white
+
+        screen.fill(colour.value)
+        pg.display.update()
 
         if not count:
             pg.quit()
