@@ -111,15 +111,3 @@ class GameOfLife:
                     self.render()
 
             self.render()
-
-
-pg.init()
-pg.event.pump()
-game = GameOfLife()
-game.addPattern("Toad", vec(8, 0))
-game.addPattern("Glider", vec(2, 3))
-game.addPattern("Glider", vec(7, 3))
-game.addPattern("Pulsar", vec(30, 20))
-game.addPattern("Spaceship H", vec(4, 10))
-game.addPattern("Beacon", vec(20, 25))
-game.run()
