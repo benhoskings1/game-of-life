@@ -47,13 +47,13 @@ class BlitPosition(Enum):
 
 class Fonts:
     def __init__(self):
-        self.large = pg.font.Font("consultation/fonts/calibri-regular.ttf", 50)
-        self.normal = pg.font.Font("consultation/fonts/calibri-regular.ttf", 30)
-        self.small = pg.font.Font("consultation/fonts/calibri-regular.ttf", 15)
+        self.large = pg.font.Font("fonts/calibri-regular.ttf", 50)
+        self.normal = pg.font.Font("fonts/calibri-regular.ttf", 30)
+        self.small = pg.font.Font("fonts/calibri-regular.ttf", 15)
         self.custom = self.normal
 
     def update_custom(self, size):
-        self.custom = pg.font.Font("consultation/fonts/calibri-regular.ttf", size=size)
+        self.custom = pg.font.Font("fonts/calibri-regular.ttf", size=size)
 
 
 class Screen:
@@ -76,6 +76,11 @@ class Screen:
         self.colour = colour
         if colour:
             self.base_surface.fill(colour)
+
+        self.power_off = False
+
+        self.power_off_surface = pg.Surface((self.size.x, self.size.y), pg.SRCALPHA)
+        self.power_off_surface.fill(Colours.white.value)
 
     def add_surf(self, surf: pg.Surface, pos=(0, 0), base=False, location=BlitLocation.topLeft, sprite=False):
         surf_rect = pg.Rect(pos, surf.get_size())
@@ -384,3 +389,48 @@ class Screen:
         self.surface = pg.transform.scale(self.surface, pg.Vector2(self.surface.get_size()) * scale)
         if base:
             self.base_surface = pg.transform.scale(self.base_surface, pg.Vector2(self.base_surface.get_size()) * scale)
+
+
+class GameButton(pg.sprite.Sprite):
+    def __init__(self, position, size, id, text=None, label=None, colour=None):
+        super().__init__()
+        self.object_type = "button"
+        self.rect = pg.Rect(position, size)
+        self.id = id
+        if colour:
+            self.colour = colour.value
+        else:
+            self.colour = Colours.hero_blue.value
+        self.text = text
+        self.label = label
+
+    def is_clicked(self, pos):
+        if self.rect.collidepoint(pos):
+            return True
+        else:
+            return False
+
+    def click_return(self):
+        return self.id
+
+
+class GameObjects(pg.sprite.Group):
+    def __init__(self, sprites):
+        super().__init__(self, sprites)
+
+    def draw(self, screen: Screen, bgsurf=None, special_flags: int = 0):
+        for obj in self.sprites():
+            if obj.object_type == "button":
+                pg.draw.rect(screen.sprite_surface, obj.colour, obj.rect, border_radius=16)
+                if obj.text:
+                    screen.add_text(obj.text, colour=Colours.white, location=BlitLocation.centre, pos=obj.rect.center,
+                                    sprite=True)
+                if obj.label:
+                    screen.add_text(obj.label, colour=Colours.darkGrey, location=BlitLocation.midBottom, pos=obj.rect.midtop,
+                                    sprite=True)
+
+            elif obj.object_type == "card" or obj.object_type == "circle":
+                screen.add_surf(obj.image, pos=obj.rect.topleft, sprite=True)
+
+            elif obj.object_type == "clock_hand":
+                screen.add_surf(obj.image, screen.size / 2, location=BlitLocation.centre, sprite=True)
