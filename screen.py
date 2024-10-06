@@ -411,7 +411,7 @@ class GameButton(pg.sprite.Sprite):
             return False
 
     def click_return(self):
-        return self.id
+        return self.object_type, self.id
 
 
 class GameObjects(pg.sprite.Group):
@@ -429,7 +429,7 @@ class GameObjects(pg.sprite.Group):
                     screen.add_text(obj.label, colour=Colours.darkGrey, location=BlitLocation.midBottom, pos=obj.rect.midtop,
                                     sprite=True)
 
-            elif obj.object_type == "card" or obj.object_type == "circle":
+            elif obj.object_type == "pattern":
                 screen.add_surf(obj.image, pos=obj.rect.topleft, sprite=True)
 
             elif obj.object_type == "clock_hand":
