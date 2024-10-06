@@ -1,13 +1,9 @@
-import pygame as pg
+import pygame
 import random
 import asyncio
-import math
-from enum import Enum
-
-from screen import Screen
 
 # Initialize pygame
-pg.init()
+pygame.init()
 
 # Constants
 SCREEN_WIDTH = 640
@@ -27,21 +23,18 @@ circle_dy = 0
 circle_color = RED
 running = True
 
-game_window = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-# game_screen = Screen(size=pg.Vector2(SCREEN_WIDTH, SCREEN_HEIGHT))
-
-pg.display.set_caption("Click the Circle")
-clock = pg.time.Clock()
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Click the Circle")
+clock = pygame.time.Clock()
 
 async def main():
     global circle_x, circle_y, circle_dx, circle_dy, circle_color, running
 
     while running:
-        game_window.fill((0, 0, 0))
+        screen.fill((0, 0, 0))
 
         # Draw the circle
-        pg.draw.circle(game_window, circle_color, (circle_x, circle_y), CIRCLE_RADIUS)
+        pygame.draw.circle(screen, circle_color, (circle_x, circle_y), CIRCLE_RADIUS)
 
         # Move the circle
         circle_x += circle_dx
@@ -52,17 +45,17 @@ async def main():
             circle_dx = -circle_dx
 
         # Check for events
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 running = False
-            if event.type == pg.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = pg.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
                 distance = ((mouse_x - circle_x) ** 2 + (mouse_y - circle_y) ** 2) ** 0.5
                 if distance <= CIRCLE_RADIUS:
                     circle_dx = -circle_dx
                     circle_color = random.choice([c for c in COLORS if c != circle_color])
 
-        pg.display.flip()
+        pygame.display.flip()
         await asyncio.sleep(0)  # Let other tasks run
 
 # This is the program entry point
