@@ -1,10 +1,11 @@
 import numpy as np
 import pygame as pg
-import pandas as pd
 from math import floor, ceil
 import cv2
 from enum import Enum
 import time
+
+import asyncio
 
 from screen import Screen, Colours, BlitLocation
 from game_screen import TouchScreen, GameButton, GameObjects
@@ -91,7 +92,8 @@ class Pattern(pg.sprite.Sprite):
 
 
 class GameOfLife:
-    def __init__(self, cells: int = 80, frameless: bool = False, border: bool = False, border_width: int = 2):
+    def __init__(self, cells: int = 80, frameless: bool = False, border: bool = False, border_width: int = 2,
+                 enable_async=False):
         """
 
         :param cells: number of cells to have within the grid.
@@ -220,6 +222,8 @@ class GameOfLife:
 
         self.selected_pattern = None
 
+        self.enable_async = enable_async
+
     def update_display(self, display_screen=None, touch_screen=None):
         if display_screen is None:
             display_screen = self.display_screen
@@ -318,7 +322,7 @@ class GameOfLife:
         self.show_sprites = False
         self.update_display()
 
-    def run(self):
+    async def run(self):
         # self.load_update()
         self.update_display()
         self.grid_init = self.display_screen.sprites.copy()
@@ -421,6 +425,7 @@ class GameOfLife:
 
                                 # Use to control movement speed of the patterns pre-initiation
                                 pg.time.wait(50)
+                                await asyncio.sleep(0)
 
                     elif self.started:
                         if event.key == pg.K_RIGHT:
@@ -452,6 +457,8 @@ class GameOfLife:
                     start = time.monotonic()
                     self.process_iteration()
 
+            await asyncio.sleep(0)
+
 
 if __name__ == "__main__":
     pg.init()
@@ -468,4 +475,5 @@ if __name__ == "__main__":
     game.addPattern("spaceships", "spaceship_l", vec(4, 10))
     game.addPattern("starters", "acorn", vec(120, 120))
 
-    game.run()
+    asyncio.run(game.run())
+
